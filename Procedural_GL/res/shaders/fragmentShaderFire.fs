@@ -2,10 +2,12 @@
         
 layout(location = 0) out vec4 color;
 
-//in vec2 v_TexCoord;
+in vec2 v_TexCoord;
 
+uniform float elapsedTime;
 //uniform vec4 u_Color;
 //uniform sampler2D u_Texture;
+
 
 float psrdnoise(vec2 x, vec2 period, float alpha, out vec2 gradient) {
 
@@ -95,10 +97,98 @@ gradient = 10.9 * (dn0 + dn1 + dn2);
 // Scale the return value to fit nicely into the range [-1,1]
 return 10.9 * n;
 }
+
+mat2 rotate2D(float a){
+float c = cos(a), s = sin(a);
+return mat2(
+        c, s, // column 1
+        -s, c // column 2
+    );
+
+//return vec2((x[0]*2.0f*0.866f, x[1]*2.0f*(-0.5f),0.0f) + (x[0]*2.0f*0.5f, x[1]*2.0f*(-0.866f)));
+//return vec2(x[0]*2.0f*0.866f + ,);
+
+
+}
+
+float fastSpline(float x){
+    float t0 = x*2.0f;
+    float r0 = 0.8f + t0*(-0.45f + t0*(-0.8f + t0*0.55f));
+    float t1 = (x - 0.5f)*2.0f;
+    float r1 = 0.1f + t1*(-0.4f + t1*(0.55f + t1*(-0.25)));
+
+    return x < 0.5f ? r0 : r1;
+
+}
        
 void main(void){
 
+    const float scale = 3.0f;
+    vec2 v = scale * v_TexCoord;
+    v[1] = v[1] - elapsedTime;
+    const vec2 p = vec2(0.0);
+    float alpha = 0.0;
+    vec2 g;
+    mat2 rot = rotate2D(0.52f);
+    float turb = abs(psrdnoise(v, p, elapsedTime, g));
+    v = v * rot * 2.0f;
+    turb += abs(0.5 * psrdnoise(v, p, elapsedTime, g));
+     v = v * rot * 2.0f;
+    turb += abs(0.25 * psrdnoise(v, p, elapsedTime, g));
+    v = v * rot * 2.0f;
+    turb += abs(0.125 * psrdnoise(v, p, elapsedTime, g));
 
+
+
+    //Modify color depending on texture coordinates, so that the fire fades out verticly and horizontally. 
+    float turbScale = 0.5f + 0.7f * ( v_TexCoord[1]);
+    float x = (1.0f / (sqrt(1.0f- v_TexCoord[1]))) * (abs(2.0f*v_TexCoord[0] - 1) + turbScale*turb);
+    float edgeDensity = 12.5f * fastSpline(clamp(x, 0.0f, 1.0f));
     
-    color = vec4(1.0f,0.0f,0.0f,1.0f);
+    //color of the edge region of the flame
+    float flameTemperature = 0.6f;
+    vec3 flameColor = {1.0,flameTemperature,flameTemperature - 0.2f}; 
+    vec3 edgeColor = flameColor * edgeDensity;
+
+    //Color of interior region  of the flame
+    float innerDensity = (2.85f*turb + 0.55f) + (1- v_TexCoord[1])*0.35f;
+    vec3 innerColor = flameColor * innerDensity;
+
+    //Pick either edgeColor or innerColor
+    vec3 finalColor = (edgeDensity > innerDensity) ? innerColor : edgeColor;
+    float density = (edgeDensity > innerDensity) ? innerDensity : edgeDensity;
+
+    finalColor = clamp(finalColor, 0.0f,1.0f);
+    density = clamp(density, 0.0f, 1.0f);
+
+    color = vec4(finalColor,density);
+
+    //vec3 ncolor = vec3(turb) * turbScale;
+    
+    ////color = vec4(1.0f,0.0f,0.0f,1.0f);
+    //color = vec4(ncolor,1.0f);
 };
+
+// Authors: Stefan Gustavson (stefan.gustavson@gmail.com)
+// and Ian McEwan (ijm567@gmail.com)
+// Version 2021-12-02, published under the MIT license (see below)
+//
+// Copyright (c) 2021 Stefan Gustavson and Ian McEwan.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.

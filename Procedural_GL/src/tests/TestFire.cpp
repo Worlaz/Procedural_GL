@@ -13,15 +13,15 @@ test::TestFire::TestFire()
 {
    
     static const float positions[] = {
-    -1.0f,1.0f, 0.0f,   //v0 
-    1.0f,1.0f, 0.0f,    //v1
-    1.0f, -1.0f, 0.0f,  //v2 
-    -1.0f, -1.0f,0.0f,  //v3  
+    -1.0f,1.0f, 0.0f, 0.0f,1.0f,   //v0 
+    1.0f,1.0f, 0.0f, 1.0f,1.0f,    //v1
+    1.0f, -1.0f, 0.0f, 1.0f,0.0f, //v2 
+    -1.0f, -1.0f,0.0f, 0.0f,0.0f, //v3  
     };
 
     unsigned int indices[] = {
-        0,1,2,
-        2,3,0
+        0,2,1,
+        2,0,3
     };
 
     //Blending
@@ -36,11 +36,11 @@ test::TestFire::TestFire()
    
     VAO = std::make_unique<VertexArray>();
 
-    m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 3 * sizeof(float)); //4 * 3, no texture coords atm
+    m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 5 * sizeof(float)); //4 * 3,if no texture coords
 
     VertexBufferLayout layout;
     layout.Push<float>(3);
-    //layout.Push<float>(2); //texture coordinates
+    layout.Push<float>(2); //texture coordinates
 
     VAO->AddBuffer(*m_VertexBuffer,layout);
     m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
@@ -79,6 +79,7 @@ test::TestFire::~TestFire()
 void test::TestFire::OnUpdate(float deltaTime)
 {
     m_DeltaTime = deltaTime;
+    m_ElapsedTime += deltaTime;
 }
 
 void test::TestFire::OnRender(GLFWwindow* inCurrentWindow)
@@ -153,6 +154,7 @@ void test::TestFire::OnRender(GLFWwindow* inCurrentWindow)
     //glm::mat4 mvp = model;
     shader->Bind();
     shader->SetUniformMat4f("u_MVP", mvp);
+    shader->SetUniform1f("elapsedTime", m_ElapsedTime);
 
     Renderer renderer;
     renderer.Draw(*VAO, *m_IndexBuffer, *shader);

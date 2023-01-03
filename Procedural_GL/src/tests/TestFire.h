@@ -41,6 +41,7 @@ namespace test {
 		}
 		
 		float m_DeltaTime{0.0f};
+		float m_ElapsedTime{ 0.0f };
 
 		glm::mat4 m_ProjMatrix, m_ViewMatrix, m_ModelMatrix;
 

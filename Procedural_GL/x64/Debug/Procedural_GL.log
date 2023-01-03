@@ -1,8 +1,25 @@
-﻿  TestFire.cpp
+﻿  Application.cpp
+  IndexBuffer.cpp
+  Renderer.cpp
+  Shader.cpp
+  Texture.cpp
+  VertexArray.cpp
+C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\VertexArray.cpp(25,116): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
+  VertexBuffer.cpp
+  TestClearColor.cpp
+  TestFire.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(3437,56): warning C4244: 'argument': conversion from '_Ty' to 'unsigned int', possible loss of data
           with
           [
               _Ty=unsigned __int64
           ]
-C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\tests\TestFire.cpp(39): message : see reference to function template instantiation 'std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,const float(&)[12],unsigned __int64,0>(const float (&)[12],unsigned __int64 &&)' being compiled
+C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\tests\TestFire.cpp(39): message : see reference to function template instantiation 'std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,const float(&)[20],unsigned __int64,0>(const float (&)[20],unsigned __int64 &&)' being compiled
+  TestTexture2D.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(3437,56): warning C4244: 'argument': conversion from '_Ty' to 'unsigned int', possible loss of data
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\tests\TestTexture2D.cpp(34): message : see reference to function template instantiation 'std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,float(&)[16],unsigned __int64,0>(float (&)[16],unsigned __int64 &&)' being compiled
+  Generating Code...
   Procedural_GL.vcxproj -> C:\Users\William\Documents\OpenGL_Project\Procedural_GL\x64\Debug\Procedural_GL.exe
