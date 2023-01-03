@@ -23,6 +23,10 @@
 #include "imgui/imgui_impl_opengl3.h"
 //#include "imgui/imgui_impl_opengl3_loader.h"
 
+#include "tests/TestCLearColor.h"
+#include "tests/TestTexture2D.h"
+#include "tests/TestFire.h"
+
 
 int main(void)
 {
@@ -36,7 +40,7 @@ int main(void)
     
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(960, 540, "Kill me", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -87,7 +91,7 @@ int main(void)
 
     IndexBuffer ib(indices, 6);
 
-    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
     glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f,0.0f,0.0f));
     
     
@@ -121,72 +125,94 @@ int main(void)
     ImGui_ImplOpenGL3_Init("#version 460");
 
 
+    test::Test* currentTest = nullptr;
+    test::TestMenu* testMenu = new test::TestMenu(currentTest);
+    currentTest = testMenu;
 
-    glm::vec3 translationA(200.0f, 200.0f, 0.0f);
-    glm::vec3 translationB(400.0f, 200.0f, 0.0f);
+    testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+    testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+    testMenu->RegisterTest<test::TestFire>("Fire GPU Texture");
 
-    float r = 0.0f;
-    float increment = 0.05f;
+    //test::TestClearColor test;
+   
 
-
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        renderer.Clear();
-        
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-        glm::mat4 mvp = proj * view * model; //reversed order for opengl layout
-        shader.Bind();
-        shader.SetUniformMat4f("u_MVP", mvp);
-        
-        renderer.Draw(va, ib, shader);
-
-        //shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-        
-        
-        //translate the other object and then render
-       model = glm::translate(glm::mat4(1.0f), translationB);
-        mvp = proj * view * model; //reversed order for opengl layout
-        shader.SetUniformMat4f("u_MVP", mvp);
-        renderer.Draw(va, ib, shader);
-
-
-       
-        
-        if (r > 1.0f) {
-            increment = -0.05f;
-        }
-        else if (r < 0.0f)
+    double lastTime = glfwGetTime();
+    
+        /* Loop until the user closes the window */
+        while (!glfwWindowShouldClose(window))
         {
-            increment = 0.05f;
+            /* Render here */
+            renderer.Clear();
+
+            /* test.OnUpdate(0.0f);
+             test.OnRender();*/
+
+             //glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+             //glm::mat4 mvp = proj * view * model; //reversed order for opengl layout
+             //shader.Bind();
+             //shader.SetUniformMat4f("u_MVP", mvp);
+             //
+             //renderer.Draw(va, ib, shader);
+
+             //shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+
+
+             //translate the other object and then render
+            //model = glm::translate(glm::mat4(1.0f), translationB);
+            // mvp = proj * view * model; //reversed order for opengl layout
+            // shader.SetUniformMat4f("u_MVP", mvp);
+            // renderer.Draw(va, ib, shader);
+
+
+
+
+
+
+             //ImGUI
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            if (currentTest)
+            {
+                //Calculate deltaTime and update lastTime
+
+                double currentTime = glfwGetTime();
+                float deltaTime = float(currentTime - lastTime);
+                lastTime = currentTime;
+
+                currentTest->OnUpdate(deltaTime);
+                currentTest->OnRender(window);
+
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+                currentTest->OnImGuiRender();
+                /*ImGui::Begin("Test");
+                currentTest->OnImGuiRender();
+                ImGui::End();*/
+            }
+
+            //test.OnImGuiRender();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            /* Swap front and back buffers */
+            glfwSwapBuffers(window);
+
+
+            /* Poll for and process events */
+            glfwPollEvents();
         }
-
-        r += increment;
-
-        //ImGUI
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-        ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-        
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
+    
+        delete currentTest;
+        if (currentTest != testMenu)
+        {
+            delete testMenu;
+        }
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
