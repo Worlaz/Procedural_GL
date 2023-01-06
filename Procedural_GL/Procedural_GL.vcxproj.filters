@@ -75,6 +75,9 @@
     <ClCompile Include="src\tests\TestFire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestFireParticles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\vertexShader.vs" />
@@ -489,6 +492,12 @@
     </None>
     <None Include="res\shaders\fragmentShaderFire.fs" />
     <None Include="res\shaders\vertexShaderFire.vs" />
+    <None Include="res\shaders\fragmentShaderFireParticles.fs" />
+    <None Include="res\shaders\vertexShaderFireParticles.vs" />
+    <None Include="res\shaders\fragmentShaderParticlePosUpdate.fs" />
+    <None Include="res\shaders\vertexShaderParticlePosUpdate.vs" />
+    <None Include="res\shaders\fragmentShaderparticle.fs" />
+    <None Include="res\shaders\vertexShaderParticle.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -1398,6 +1407,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tests\TestFire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\TestFireParticles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

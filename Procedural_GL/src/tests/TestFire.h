@@ -42,7 +42,8 @@ namespace test {
 		
 		float m_DeltaTime{0.0f};
 		float m_ElapsedTime{ 0.0f };
-
+		float m_GradRotSpeed{ 1.0f };
+		float m_VerticalSpeed{ 1.0f };
 		glm::mat4 m_ProjMatrix, m_ViewMatrix, m_ModelMatrix;
 
 		std::unique_ptr<VertexArray> VAO;
@@ -54,7 +55,7 @@ namespace test {
 
 		//User controls
 		// position
-		glm::vec3 position = glm::vec3(0, 0, 5);
+		glm::vec3 position = glm::vec3(1, 0, 2.5);
 		// horizontal angle : toward -Z
 		float horizontalAngle = 3.14f;
 		// vertical angle : 0, look at the horizon

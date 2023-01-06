@@ -140,6 +140,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestFire.cpp" />
+    <ClCompile Include="src\tests\TestFireParticles.cpp" />
     <ClCompile Include="src\tests\TestTexture2D.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
@@ -157,8 +158,14 @@
   <ItemGroup>
     <None Include="res\shaders\fragmentShader.fs" />
     <None Include="res\shaders\fragmentShaderFire.fs" />
+    <None Include="res\shaders\fragmentShaderFireParticles.fs" />
+    <None Include="res\shaders\fragmentShaderparticle.fs" />
+    <None Include="res\shaders\fragmentShaderParticlePosUpdate.fs" />
     <None Include="res\shaders\vertexShader.vs" />
     <None Include="res\shaders\vertexShaderFire.vs" />
+    <None Include="res\shaders\vertexShaderFireParticles.vs" />
+    <None Include="res\shaders\vertexShaderParticle.vs" />
+    <None Include="res\shaders\vertexShaderParticlePosUpdate.vs" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -303,6 +310,7 @@
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestCLearColor.h" />
     <ClInclude Include="src\tests\TestFire.h" />
+    <ClInclude Include="src\tests\TestFireParticles.h" />
     <ClInclude Include="src\tests\TestTexture2D.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />

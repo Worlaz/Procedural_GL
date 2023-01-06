@@ -26,7 +26,7 @@
 #include "tests/TestCLearColor.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestFire.h"
-
+#include "tests/TestFireParticles.h"
 
 int main(void)
 {
@@ -132,6 +132,7 @@ int main(void)
     testMenu->RegisterTest<test::TestClearColor>("Clear Color");
     testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
     testMenu->RegisterTest<test::TestFire>("Fire GPU Texture");
+    testMenu->RegisterTest<test::TestFireParticles>("Fire Particle System");
 
     //test::TestClearColor test;
    

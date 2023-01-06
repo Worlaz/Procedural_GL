@@ -156,6 +156,9 @@ void test::TestFire::OnRender(GLFWwindow* inCurrentWindow)
     shader->SetUniformMat4f("u_MVP", mvp);
     shader->SetUniform1f("elapsedTime", m_ElapsedTime);
 
+    shader->SetUniform1f("gradRotSpeed", m_GradRotSpeed);
+    shader->SetUniform1f("verticalSpeed", m_VerticalSpeed);
+
     Renderer renderer;
     renderer.Draw(*VAO, *m_IndexBuffer, *shader);
 
@@ -169,5 +172,7 @@ void test::TestFire::OnImGuiRender()
 {
     //ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
     //ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
+    ImGui::SliderFloat("Grad Rot Speed",&m_GradRotSpeed,0.0f,10.0f);
+    ImGui::SliderFloat("Vertical Speed", &m_VerticalSpeed, 0.0f, 10.0f);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }

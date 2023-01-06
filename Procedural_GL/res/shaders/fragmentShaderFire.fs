@@ -5,6 +5,10 @@ layout(location = 0) out vec4 color;
 in vec2 v_TexCoord;
 
 uniform float elapsedTime;
+uniform float gradRotSpeed;
+uniform float verticalSpeed;
+
+
 //uniform vec4 u_Color;
 //uniform sampler2D u_Texture;
 
@@ -125,24 +129,26 @@ void main(void){
 
     const float scale = 3.0f;
     vec2 v = scale * v_TexCoord;
-    v[1] = v[1] - elapsedTime;
+    v[1] = v[1] - (elapsedTime * verticalSpeed);
     const vec2 p = vec2(0.0);
     float alpha = 0.0;
     vec2 g;
     mat2 rot = rotate2D(0.52f);
-    float turb = abs(psrdnoise(v, p, elapsedTime, g));
+    float turb = abs(psrdnoise(v, p, elapsedTime * gradRotSpeed, g));
     v = v * rot * 2.0f;
-    turb += abs(0.5 * psrdnoise(v, p, elapsedTime, g));
+    turb += abs(0.5 * psrdnoise(v, p, elapsedTime * gradRotSpeed, g));
      v = v * rot * 2.0f;
-    turb += abs(0.25 * psrdnoise(v, p, elapsedTime, g));
+    turb += abs(0.25 * psrdnoise(v, p, elapsedTime * gradRotSpeed, g));
     v = v * rot * 2.0f;
-    turb += abs(0.125 * psrdnoise(v, p, elapsedTime, g));
+    turb += abs(0.125 * psrdnoise(v, p, elapsedTime * gradRotSpeed, g));
 
 
 
     //Modify color depending on texture coordinates, so that the fire fades out verticly and horizontally. 
-    float turbScale = 0.5f + 0.7f * ( v_TexCoord[1]);
-    float x = (1.0f / (sqrt(1.0f- v_TexCoord[1]))) * (abs(2.0f*v_TexCoord[0] - 1) + turbScale*turb);
+    float turbScale = 0.5f + 0.9f * ( v_TexCoord[1]);
+
+
+    float x = (1.0f / (sqrt( 1- v_TexCoord[1]))) * (abs(2.0f*v_TexCoord[0] - 1) + turbScale*turb);
     float edgeDensity = 12.5f * fastSpline(clamp(x, 0.0f, 1.0f));
     
     //color of the edge region of the flame

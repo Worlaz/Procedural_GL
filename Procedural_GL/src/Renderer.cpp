@@ -33,3 +33,13 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
     GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 
 }
+
+void Renderer::DrawInstances(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, const int nmbrOfIndices, const int instanceCount) const
+{
+    shader.Bind();
+
+    va.Bind();
+    ib.Bind();
+
+    GLCall(glDrawElementsInstanced(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT,nullptr, instanceCount));
+}
