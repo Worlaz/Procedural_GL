@@ -18,25 +18,17 @@ void main()
     //vec4 grad = textureGrad(u_TexturePos,particleIndex,vec2(0.0),vec2(0.0));
 
     mat4 tranMatrix = mat4(1.0);
-   tranMatrix[3] = texValue;
-   tranMatrix[3][0] = tranMatrix[3][0] *5;
-   tranMatrix[3][1] = tranMatrix[3][1] * 5;
-   tranMatrix[3][2] = 0;
-   tranMatrix[3][3] = 1;
+   tranMatrix[3][0] = (texValue[0] * 2 - 1) * 50;
+    tranMatrix[3][1] = (texValue[1] * 2 - 1) * 50;
+    tranMatrix[3][2] = (texValue[2] * 2 - 1) * 50;
 
-   
-   //tranMatrix[3][0] = grad[0] * 5;
-   //tranMatrix[3][1] = 0;
+
+
+   //tranMatrix[3][0] = tranMatrix[3][0] *5;
+   //tranMatrix[3][1] = tranMatrix[3][1] * 5;
    //tranMatrix[3][2] = 0;
    //tranMatrix[3][3] = 1;
 
-
-    //tranMatrix[3][0] = textureLod(u_TexturePos,vec2(0.5,0.5),0.0); //vec2(gl_InstanceID)
-    //tranMatrix[3][0] = tex2Dlod(u_TexturePos,vec4(0.5,0.5,0,0));
-    //tranMatrix[3][1] = gl_InstanceID * 2;
-    //tranMatrix[3][0] = gl_InstanceID;
-    //tranMatrix[3][1] = texture(u_TexturePos,vec2(gl_InstanceID));
-    //tranMatrix[3][2] = texture(u_TexturePos,vec2(gl_InstanceID));
 
     gl_Position =  u_MVP * tranMatrix * position; 
     //vec4 modPos = vec4(position[0] + gl_InstanceID*2, position[1],position[2], 1.0);

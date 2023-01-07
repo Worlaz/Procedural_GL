@@ -264,7 +264,7 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
     
 
-    //glDeleteFramebuffers(1, &m_FBOPosition1); DO WE NEED TO DO THIS?
+    glDeleteFramebuffers(1, &m_FBOPosition1); //DO WE NEED TO DO THIS?
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -276,7 +276,9 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
     
     m_shaderDisplayTexture->Bind();
-    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp);
+    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-2.0, 0.0, 0.0)); //reversed order for opengl layout
+
+    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
    
 
@@ -287,11 +289,14 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));*/
     shader->Bind();
 
+    mvp = mvp * glm::scale(glm::mat4(1.0f), glm::vec3(0.05, 0.05, 0.05));
+
     shader->SetUniformMat4f("u_MVP", mvp);
     shader->SetUniform1i("u_TexturePos", 0);
+   
 
-
-    renderer.DrawInstances(*VAO, *m_IndexBuffer, *shader, 4, 4);
+    //draw all instanced 
+    renderer.DrawInstances(*VAO, *m_IndexBuffer, *shader, 4, 10000);
     
     /*shader->SetUniform1f("elapsedTime", m_ElapsedTime);
 
