@@ -18,9 +18,10 @@ void main()
     //vec4 grad = textureGrad(u_TexturePos,particleIndex,vec2(0.0),vec2(0.0));
 
     mat4 tranMatrix = mat4(1.0);
-   tranMatrix[3][0] = (texValue[0] * 2 - 1) * 50;
+    tranMatrix[3][0] = (texValue[0] * 2 - 1) * 50;
     tranMatrix[3][1] = (texValue[1] * 2 - 1) * 50;
     tranMatrix[3][2] = (texValue[2] * 2 - 1) * 50;
+    tranMatrix[3][3] = 1;
 
 
 

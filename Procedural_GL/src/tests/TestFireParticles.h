@@ -48,7 +48,7 @@ namespace test {
 		unsigned int m_FBOVelocity0;
 		unsigned int m_FBOVelocity1;
 
-		unsigned int texture_Switch { 0 };
+		unsigned int readingFrom { 0 };
 		unsigned int m_TexturePosition0;
 		unsigned int m_TexturePosition1;
 		unsigned int m_TextureVelocity0;
@@ -69,6 +69,7 @@ namespace test {
 		std::unique_ptr < Shader> m_shaderParticlePosInit;
 		std::unique_ptr < Shader> m_shaderParticleVelInit;
 		std::unique_ptr < Shader> m_shaderParticlePosUpdate;
+		std::unique_ptr < Shader> m_shaderParticleVelUpdate;
 		std::unique_ptr < Shader> m_shaderDisplayTexture; //shader for displaying the position texture
 		std::unique_ptr<Texture> m_Texture;
 
