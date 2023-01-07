@@ -40,7 +40,7 @@ int main(void)
     
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(960, 540, "Kill me", NULL, NULL);
+    window = glfwCreateWindow(960, 540, "Fire me", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

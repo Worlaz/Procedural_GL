@@ -161,11 +161,15 @@
     <None Include="res\shaders\fragmentShaderFireParticles.fs" />
     <None Include="res\shaders\fragmentShaderparticle.fs" />
     <None Include="res\shaders\fragmentShaderParticlePosUpdate.fs" />
+    <None Include="res\shaders\FSParticlePositionInitial.fs" />
+    <None Include="res\shaders\FSParticleVelocityInitial.fs" />
     <None Include="res\shaders\vertexShader.vs" />
     <None Include="res\shaders\vertexShaderFire.vs" />
     <None Include="res\shaders\vertexShaderFireParticles.vs" />
     <None Include="res\shaders\vertexShaderParticle.vs" />
     <None Include="res\shaders\vertexShaderParticlePosUpdate.vs" />
+    <None Include="res\shaders\VSParticlePositionInitial.vs" />
+    <None Include="res\shaders\VSParticleVelocityInitial.vs" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />

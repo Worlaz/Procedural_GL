@@ -21,12 +21,12 @@ namespace test {
 
 		TestFireParticles();
 		~TestFireParticles();
-
+		void Init(GLFWwindow* inCurrentWindow);
 		void OnUpdate(float deltaTime) override;
 		void OnRender(GLFWwindow* inCurrentWindow) override;
 		void OnImGuiRender() override;
 
-
+		
 	private:
 		bool mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		{
@@ -39,6 +39,8 @@ namespace test {
 			}
 
 		}
+
+		bool IsInitial{ true };
 
 		unsigned int fbo_Switch{ 0 };
 		unsigned int m_FBOPosition0;
@@ -64,7 +66,9 @@ namespace test {
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::unique_ptr < IndexBuffer> m_IndexBuffer;
 		std::unique_ptr < Shader> shader;
-		std::unique_ptr < Shader> m_shaderParticlePos;
+		std::unique_ptr < Shader> m_shaderParticlePosInit;
+		std::unique_ptr < Shader> m_shaderParticleVelInit;
+		std::unique_ptr < Shader> m_shaderParticlePosUpdate;
 		std::unique_ptr < Shader> m_shaderDisplayTexture; //shader for displaying the position texture
 		std::unique_ptr<Texture> m_Texture;
 
@@ -80,7 +84,7 @@ namespace test {
 		float initialFoV = 45.0f;
 
 		float speed = 3.0f; // 3 units / second
-		float mouseSpeed = 0.02f;
+		float mouseSpeed = 0.04f;
 		
 	
 

@@ -53,8 +53,8 @@ test::TestFireParticles::TestFireParticles()
     m_shaderDisplayTexture = std::make_unique<Shader>("res/shaders/vertexShader.vs", "res/shaders/fragmentShader.fs");
     m_shaderDisplayTexture->Bind();
     
-    m_shaderParticlePos = std::make_unique<Shader>("res/shaders/vertexShaderParticlePosUpdate.vs", "res/shaders/fragmentShaderParticlePosUpdate.fs");
-    m_shaderParticlePos->Bind();
+    m_shaderParticlePosUpdate = std::make_unique<Shader>("res/shaders/vertexShaderParticlePosUpdate.vs", "res/shaders/fragmentShaderParticlePosUpdate.fs");
+    m_shaderParticlePosUpdate->Bind();
 
     //shader = std::make_unique<Shader>("res/shaders/vertexShaderFireParticles.vs", "res/shaders/fragmentShaderFireParticles.fs");
     shader = std::make_unique<Shader>("res/shaders/vertexShaderParticle.vs", "res/shaders/fragmentShaderParticle.fs");
@@ -99,11 +99,152 @@ test::TestFireParticles::TestFireParticles()
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition1, 0));*/
 
 
+    
+
+
+   
+
+   
+
+
+
+
+
+
+
 }
 
 test::TestFireParticles::~TestFireParticles()
 {
     GLCall(glDisable(GL_DEPTH_TEST));
+}
+
+void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
+{
+    int width, height;
+    glfwGetWindowSize(inCurrentWindow, &width, &height);
+    GLCall(glViewport(0, 0, 100, 100));
+
+    Renderer renderer;
+
+    //First texture and fbo for POSITIONING0------------------------------------------------------------------------------------------------------------
+    GLCall(glGenFramebuffers(1, &m_FBOPosition0));
+    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
+
+    // generate texture
+    glGenTextures(1, &m_TexturePosition0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+
+
+    GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition0, 0));
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // std::cout << "FBO success!" << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO BAD" << std::endl;
+    }
+    //m_shaderParticlePos->Bind();
+
+    
+    m_shaderParticlePosInit = std::make_unique<Shader>("res/shaders/VSParticlePositionInitial.vs", "res/shaders/FSParticlePositionInitial.fs");
+
+
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticlePosInit);
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    //GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    // Clear the screen
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    //Change viewport back again
+   
+
+    //Second texture and fbo for POSITIONING1----------------------------------------------------------------------------------------------------------
+    GLCall(glGenFramebuffers(1, &m_FBOPosition1));
+    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition1));
+
+    // generate texture
+    glGenTextures(1, &m_TexturePosition1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+
+
+    GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition1, 0));
+
+
+    //First texture and fbo for VELOCITY0------------------------------------------------------------------------------------------------------------
+    GLCall(glGenFramebuffers(1, &m_FBOVelocity0));
+    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity0));
+
+    // generate texture
+    glGenTextures(1, &m_TextureVelocity0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+
+
+    GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureVelocity0, 0));
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // std::cout << "FBO success!" << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO BAD" << std::endl;
+    }
+    //m_shaderParticlePos->Bind();
+
+
+    m_shaderParticleVelInit = std::make_unique<Shader>("res/shaders/VSParticleVelocityInitial.vs", "res/shaders/FSParticleVelocityInitial.fs");
+
+
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticleVelInit);
+
+
+
+
+    //Second texture and fbo for VELOCITY1------------------------------------------------------------------------------------------------------------
+    GLCall(glGenFramebuffers(1, &m_FBOVelocity1));
+    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity1));
+
+    // generate texture
+    glGenTextures(1, &m_TextureVelocity1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    
+
+    GLCall(glViewport(0, 0, width, height));
 }
 
 void test::TestFireParticles::OnUpdate(float deltaTime)
@@ -121,6 +262,13 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     // Clear the screen
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
    
+    if (IsInitial)
+    {
+        Init(inCurrentWindow);
+        IsInitial = false;
+    }
+
+
     //User mouse input---------------------------------------------------------------------------------
     // 
     int mouseButtonState = glfwGetMouseButton(inCurrentWindow,GLFW_MOUSE_BUTTON_RIGHT);
@@ -170,6 +318,14 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     if (glfwGetKey(inCurrentWindow,GLFW_KEY_S) == GLFW_PRESS) {
         position -= direction * m_DeltaTime * speed;
     }
+    // Move upward
+    if (glfwGetKey(inCurrentWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        position += up * m_DeltaTime * speed;
+    }
+    // Move downward
+    if (glfwGetKey(inCurrentWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        position -= up * m_DeltaTime * speed;
+    }
     // Strafe right
     if (glfwGetKey(inCurrentWindow,GLFW_KEY_D) == GLFW_PRESS) {
         position += right * m_DeltaTime * speed;
@@ -201,7 +357,7 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
     //save old viewport size and change to match texture size corresponding nmbr of particles
     
-   /* if (texture_Switch == 0)
+    if (texture_Switch == 0)
     {
         GLCall(glActiveTexture(GL_TEXTURE0));
         GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));
@@ -212,7 +368,8 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
         GLCall(glActiveTexture(GL_TEXTURE0));
         GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition1));
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition1));
-    }*/
+        
+    }
 
     
 
@@ -223,23 +380,8 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));*/
     
    
-
-    GLCall(glGenFramebuffers(1, &m_FBOPosition0));
-    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
-
-    // generate texture
-    glGenTextures(1, &m_TexturePosition0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_BASE_LEVEL,0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
-
-
-    GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition0, 0));
+    //GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
+    
    
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
        // std::cout << "FBO success!" << std::endl;
@@ -257,14 +399,14 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
 
 
+    m_shaderParticlePosUpdate->Bind();
 
-
-
-    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticlePos);
+    //Update the position
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticlePosUpdate);
 
     
 
-    glDeleteFramebuffers(1, &m_FBOPosition1); //DO WE NEED TO DO THIS?
+    //glDeleteFramebuffers(1, &m_FBOPosition1); //DO WE NEED TO DO THIS?
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -276,7 +418,7 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
     
     m_shaderDisplayTexture->Bind();
-    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-2.0, 0.0, 0.0)); //reversed order for opengl layout
+    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 0.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
