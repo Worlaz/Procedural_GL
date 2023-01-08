@@ -22,6 +22,9 @@ namespace test {
 		TestFireParticles();
 		~TestFireParticles();
 		void Init(GLFWwindow* inCurrentWindow);
+		void UpdatePosition(GLFWwindow* inCurrentWindow = nullptr);
+		void UpdateVelocity(GLFWwindow* inCurrentWindow = nullptr);
+		void DisplayTextures(GLFWwindow* inCurrentWindow = nullptr);
 		void OnUpdate(float deltaTime) override;
 		void OnRender(GLFWwindow* inCurrentWindow) override;
 		void OnImGuiRender() override;
@@ -39,7 +42,7 @@ namespace test {
 			}
 
 		}
-
+		Renderer renderer;
 		bool IsInitial{ true };
 
 		unsigned int fbo_Switch{ 0 };

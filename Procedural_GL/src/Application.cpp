@@ -137,7 +137,7 @@ int main(void)
     //test::TestClearColor test;
    
 
-    double lastTime = glfwGetTime();
+    double lastTime = 0;
     
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -178,8 +178,8 @@ int main(void)
             {
                 //Calculate deltaTime and update lastTime
 
-                double currentTime = glfwGetTime();
-                float deltaTime = float(currentTime - lastTime);
+                float currentTime = (float)glfwGetTime();
+                float deltaTime = (currentTime - lastTime);
                 lastTime = currentTime;
 
                 currentTest->OnUpdate(deltaTime);

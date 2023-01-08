@@ -119,6 +119,7 @@ test::TestFireParticles::TestFireParticles()
 
 test::TestFireParticles::~TestFireParticles()
 {
+    GLCall(glBindTexture(GL_TEXTURE_2D, 0));
     GLCall(glDisable(GL_DEPTH_TEST));
 }
 
@@ -165,7 +166,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
 
     renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticlePosInit);
 
-
+    //unbind fbo to default buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -173,7 +174,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     // Clear the screen
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     //Change viewport back again
-   
+    GLCall(glViewport(0, 0, 100, 100));
 
     //Second texture and fbo for POSITIONING1----------------------------------------------------------------------------------------------------------
     GLCall(glGenFramebuffers(1, &m_FBOPosition1));
@@ -195,6 +196,12 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
 
 
     //First texture and fbo for VELOCITY0------------------------------------------------------------------------------------------------------------
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    //GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    // Clear the screen
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    //Change viewport back again
+    GLCall(glViewport(0, 0, 100, 100));
     m_shaderParticleVelInit = std::make_unique<Shader>("res/shaders/VSParticleVelocityInitial.vs", "res/shaders/FSParticleVelocityInitial.fs");
     m_shaderParticleVelInit->Bind();
 
@@ -249,11 +256,182 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
 
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureVelocity1, 0));
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
     
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    //GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    // Clear the screen
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
     GLCall(glViewport(0, 0, width, height));
+}
+
+void test::TestFireParticles::UpdatePosition(GLFWwindow* inCurrentWindow)
+{
+    
+    //fbo stuffs
+
+    //UPDATE POSITION USING VELOCITY AND OLD POSITIONS----------------------------------
+    m_shaderParticlePosUpdate->Bind();
+    GLCall(glViewport(0, 0, 100, 100));
+    //Select FBO and texture to write to 
+    if (readingFrom == 0) //Read from 0 and write to 1
+    {
+        GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition1));
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition1));
+
+
+    }
+    else //Read from 1 and write to 0
+    {
+        GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
+
+    }
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // std::cout << "FBO success!" << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO BAD" << std::endl;
+    }
+    //save old viewport size and change to match texture size corresponding nmbr of particles
+    
+    
+    //Select textures to read from
+    if (readingFrom == 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+    }
+    else
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
+    }
+
+
+    m_shaderParticlePosUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
+    m_shaderParticlePosUpdate->SetUniform1i("u_TexturePosition", 0);
+    m_shaderParticlePosUpdate->SetUniform1i("u_TextureVelocity", 1);
+
+
+    //Update the position
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticlePosUpdate);
+}
+
+void test::TestFireParticles::UpdateVelocity(GLFWwindow* inCurrentWindow)
+{
+    m_shaderParticleVelUpdate->Bind();
+    GLCall(glViewport(0, 0, 100, 100));
+    //Select FBO and texture to write to 
+    if (readingFrom == 0) //Read from 0 and write to 1
+    {
+        GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1));
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity1));
+
+
+    }
+    else //Read from 1 and write to 0
+    {
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0));
+        GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity0));
+
+    }
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // std::cout << "FBO success!" << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO BAD" << std::endl;
+    }
+
+    //select texture to read from
+    if (readingFrom == 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+
+
+    }
+    else
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
+
+
+    }
+
+    m_shaderParticleVelUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
+    //m_shaderParticleVelUpdate->SetUniform1i("u_TextureVelocity", 0);
+
+
+    //Update the Velocity
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticleVelUpdate);
+}
+
+void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
+{
+    m_shaderDisplayTexture->Bind();
+    if (readingFrom == 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
+
+
+    }
+    else
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+
+
+    }
+    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 0.0, 0.0)); //reversed order for opengl layout
+
+    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
+    m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
+
+
+    //display the position texture
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderDisplayTexture);
+    m_shaderDisplayTexture->Bind();
+    if (readingFrom == 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+
+
+    }
+    else
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+
+
+    }
+    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(3.0, 0.0, 0.0)); //reversed order for opengl layout
+
+    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
+    m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
+    //display the velocity texture
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderDisplayTexture);
+
+
+
+
 }
 
 void test::TestFireParticles::OnUpdate(float deltaTime)
@@ -283,6 +461,7 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     int mouseButtonState = glfwGetMouseButton(inCurrentWindow,GLFW_MOUSE_BUTTON_RIGHT);
 
     int width, height;
+    glfwGetWindowSize(inCurrentWindow, &width, &height);
     if (mouseButtonState == GLFW_PRESS)
     {
         glfwSetInputMode(inCurrentWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -357,65 +536,9 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     //glm::mat4 mvp = model;
 
     //RENDERING------------------------------------------------------------------------------------------------------------
-    Renderer renderer;
-    //fbo stuffs
     
-    //UPDATE POSITION USING VELOCITY AND OLD POSITIONS----------------------------------
-    m_shaderParticlePosUpdate->Bind();
-   
-    if (readingFrom == 0) //Read from 0 and write to 1
-    {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));
-        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
 
-
-    }
-    else //Read from 1 and write to 0
-    {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition1));
-        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition1));
-        
-    }
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
-       // std::cout << "FBO success!" << std::endl;
-    }
-    else
-    {
-        std::cout << "FBO BAD" << std::endl;
-    }
-    //save old viewport size and change to match texture size corresponding nmbr of particles
-    glfwGetWindowSize(inCurrentWindow, &width, &height);
-    GLCall(glViewport(0, 0, 100, 100));
-
-    if (readingFrom == 0)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
-    }
-
-
-    m_shaderParticlePosUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
-    m_shaderParticlePosUpdate->SetUniform1i("u_TexturePosition", 0);
-    m_shaderParticlePosUpdate->SetUniform1i("u_TextureVelocity", 1);
-
-
-    //Update the position
-    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticlePosUpdate);
-
-    
+    UpdatePosition();
 
     //glDeleteFramebuffers(1, &m_FBOPosition1); //DO WE NEED TO DO THIS?
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -427,90 +550,22 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     
 
     //UPDATE Velocity USING OLD VELOCITY----------------------------------
-    m_shaderParticleVelUpdate->Bind();
+   
+    UpdateVelocity();
 
-    if (readingFrom == 0) //Read from 0 and write to 1
-    {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0));
-        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity0));
-
-
-    }
-    else //Read from 1 and write to 0
-    {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1));
-        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity1));
-
-    }
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
-        // std::cout << "FBO success!" << std::endl;
-    }
-    else
-    {
-        std::cout << "FBO BAD" << std::endl;
-    }
-
-
-    if (readingFrom == 0)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
-
-        
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
-
-        
-    }
-
-    m_shaderParticleVelUpdate->SetUniform1f("u_DeltaTime",m_DeltaTime);
-    m_shaderParticleVelUpdate->SetUniform1i("u_TextureVelocity", 0);
-
-    
-    //Update the Velocity
-    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticleVelUpdate);
-
-    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // Clear the screen
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     //Change viewport back again
     GLCall(glViewport(0, 0, width, height));
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    m_shaderDisplayTexture->Bind();
-    if (readingFrom == 0)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+    //Display all textures pos and vel
+    DisplayTextures();
 
-
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
-
-
-    }
-    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 0.0, 0.0)); //reversed order for opengl layout
-
-    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
-    m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
-   
-
-    //display the position texture
-    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderDisplayTexture);
-
-   /* GLCall(glActiveTexture(GL_TEXTURE0));
-    GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));*/
+    //Render all particles-----------------------
     shader->Bind();
     if (readingFrom == 0)
     {

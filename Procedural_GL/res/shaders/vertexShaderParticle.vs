@@ -12,28 +12,20 @@ void main()
 {
     
     float ID = gl_InstanceID;
-    ivec2 particleIndex = ivec2(mod(ID, 100),floor(ID / 100));
+    ivec2 particleIndex = ivec2(mod(ID, 100.0f),floor(ID / 100.0f));
     vec4 texValue = texelFetch(u_TexturePos,particleIndex,0);
 
-    //vec4 grad = textureGrad(u_TexturePos,particleIndex,vec2(0.0),vec2(0.0));
+    //vec4 grad = textureGrad(u_TexturePos,particleIndex,vec2(0.0f),vec2(0.0)f);
 
-    mat4 tranMatrix = mat4(1.0);
-    tranMatrix[3][0] = (texValue[0] * 2 - 1) * 50;
-    tranMatrix[3][1] = (texValue[1] * 2 - 1) * 50;
-    tranMatrix[3][2] = (texValue[2] * 2 - 1) * 50;
-    tranMatrix[3][3] = 1;
-
-
-
-   //tranMatrix[3][0] = tranMatrix[3][0] *5;
-   //tranMatrix[3][1] = tranMatrix[3][1] * 5;
-   //tranMatrix[3][2] = 0;
-   //tranMatrix[3][3] = 1;
+    mat4 tranMatrix = mat4(1.0f);
+    tranMatrix[3][0] = texValue[0];//  * 50;
+    tranMatrix[3][1] = texValue[1];// * 50;
+    tranMatrix[3][2] = texValue[2];// * 50;
+    tranMatrix[3][3] = 1.0f;
 
 
     gl_Position =  u_MVP * tranMatrix * position; 
-    //vec4 modPos = vec4(position[0] + gl_InstanceID*2, position[1],position[2], 1.0);
-    //gl_Position = u_MVP *modPos;
+    //gl_Position = u_MVP * texValue;
     v_TexCoord = texCoord;
     
     
