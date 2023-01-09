@@ -143,7 +143,7 @@ int main(void)
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            renderer.Clear();
+            //renderer.Clear();
 
             /* test.OnUpdate(0.0f);
              test.OnRender();*/

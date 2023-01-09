@@ -194,7 +194,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
 
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition1, 0));
 
-
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //First texture and fbo for VELOCITY0------------------------------------------------------------------------------------------------------------
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     //GLCall(glClear(GL_COLOR_BUFFER_BIT));
@@ -235,7 +235,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
    
 
     renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticleVelInit);
-
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 
@@ -375,7 +375,8 @@ void test::TestFireParticles::UpdateVelocity(GLFWwindow* inCurrentWindow)
     }
 
     m_shaderParticleVelUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
-    //m_shaderParticleVelUpdate->SetUniform1i("u_TextureVelocity", 0);
+    m_shaderParticleVelUpdate->SetUniform3fv("u_Acceleration", m_Acceleration);
+    m_shaderParticleVelUpdate->SetUniform1i("u_TextureVelocity", 0);
 
 
     //Update the Velocity
@@ -385,21 +386,11 @@ void test::TestFireParticles::UpdateVelocity(GLFWwindow* inCurrentWindow)
 void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
 {
     m_shaderDisplayTexture->Bind();
-    if (readingFrom == 0)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
+   
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
 
-
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
-
-
-    }
-    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 0.0, 0.0)); //reversed order for opengl layout
+    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-6.0, 0.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
@@ -407,22 +398,40 @@ void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
 
     //display the position texture
     renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderDisplayTexture);
+
     m_shaderDisplayTexture->Bind();
-    if (readingFrom == 0)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+   
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+
+    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 0.0, 0.0)); //reversed order for opengl layout
+
+    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
+    m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
+    //display the position texture
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderDisplayTexture);
 
 
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
 
+    //-----------------------------------------
+    m_shaderDisplayTexture->Bind();
+   
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
 
-    }
     mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(3.0, 0.0, 0.0)); //reversed order for opengl layout
+
+    m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
+    m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
+    //display the velocity texture
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderDisplayTexture);
+    m_shaderDisplayTexture->Unbind();
+    m_shaderDisplayTexture->Bind();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
+
+    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(6.0, 0.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
@@ -608,6 +617,8 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     {
         readingFrom = 0;
     }
+
+    //std::cout << m_DeltaTime << std::endl;
     
 }
 
@@ -615,6 +626,6 @@ void test::TestFireParticles::OnImGuiRender()
 {
     //ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
     //ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
-   
+    ImGui::SliderFloat3("Translation A", &m_Acceleration.x, -1.0f, 1.0f);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }

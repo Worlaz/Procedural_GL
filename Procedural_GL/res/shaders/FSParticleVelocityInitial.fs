@@ -20,6 +20,6 @@ void main()
     //vec4 texColor = texture(u_Texture,v_TexCoord);
     //color = vec4(vec3(random(v_TexCoord)) + texture(u_TexturePosition,v_TexCoord),1.0) ;
     //color = vec4(vec3(random(v_TexCoord)),1.0);
-    color = vec4(0.0f,1.0f,0.0f,1.0f);
+    color = vec4(0.0f,0.0f,0.0f,1.0f);
      //color = vec4(0.2,0.0,0.0,1.0);
 };
