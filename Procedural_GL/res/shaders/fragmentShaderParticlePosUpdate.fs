@@ -4,23 +4,28 @@ layout(location = 0) out vec4 color;
 
 in vec2 v_TexCoord;
 
-//uniform float u_DeltaTime;
+uniform float u_DeltaTime;
 
 
 
 uniform sampler2D u_TexturePosition;
-//uniform sampler2D u_TextureVelocity;
+uniform sampler2D u_TextureVelocity;
        
 
 void main()
 {
     
-
+   
     vec4 position = texture(u_TexturePosition,v_TexCoord);
-    vec4 posClamped = clamp(position + position * 0.00000f,vec4(-100.0f),vec4(100.0f));
+    
+    vec4 posClamped = clamp(position + vec4(0.0f,0.1f,0.0f,0.0f) ,vec4(-100.0f),vec4(100.0f));
     color = posClamped;
     //vec4 velocity =  texture(u_TextureVelocity, v_TexCoord);
     //vec4 newPos = position + velocity* (u_DeltaTime/100);
     // vec4 positionClamped = clamp(newPos,vec4(-100.0f),vec4(100.0f));
+    
+    
+    //color = position;// + vec4(0.0f,0.0001f ,0.0f,1.0f) * u_DeltaTime/100;
+    
    
 };

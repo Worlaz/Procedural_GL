@@ -300,7 +300,7 @@ float psrdnoise(vec3 x, vec3 period, float alpha, out vec3 gradient)
 
 void main()
 {
-    
+    psrdnoise();
 
     vec4 velocity = texture(u_TextureVelocity,v_TexCoord) + vec4(u_Acceleration[0],u_Acceleration[1],u_Acceleration[2],0.0f)*u_DeltaTime/100;
     vec4 velocityClamped = clamp(velocity,vec4(-1.0f),vec4(1.0f));

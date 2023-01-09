@@ -225,6 +225,10 @@ void test::TestFireParticles::UpdatePosition(GLFWwindow* inCurrentWindow)
 
     //UPDATE POSITION USING VELOCITY AND OLD POSITIONS----------------------------------
     m_shaderParticlePosUpdate->Bind();
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    //GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    // Clear the screen
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
     //Select FBO and texture to write to 
     if (readingFrom == 0) //Read from 0 and write to 1
@@ -275,7 +279,7 @@ void test::TestFireParticles::UpdatePosition(GLFWwindow* inCurrentWindow)
 
     m_shaderParticlePosUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
     m_shaderParticlePosUpdate->SetUniform1i("u_TexturePosition", 0);
-    m_shaderParticlePosUpdate->SetUniform1i("u_TextureVelocity", 1);
+   // m_shaderParticlePosUpdate->SetUniform1i("u_TextureVelocity", 1);
 
 
     //Update the position
