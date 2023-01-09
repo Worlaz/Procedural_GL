@@ -65,56 +65,6 @@ test::TestFireParticles::TestFireParticles()
     shader->Bind();
     //shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
 
-
-    //m_Texture = std::make_unique<Texture>("res/textures/Profile_picture.png");
-    //shader->SetUniform1i("u_Texture", 0); // must match what we call in texture.Bind()
-
-    ////clearing stuff
-   
-    //m_IndexBuffer->Unbind();
-    //shader->Unbind();
-
-    
-   /* glGenTextures(1, &m_TexturePosition0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 100, 100, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-    GLCall(glGenFramebuffers(1, &m_FBOPosition0));
-    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
-    GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition0, 0));*/
-
-    //--------- SECOND TEXTURE AND FBO
-
-    /*glGenTextures(1, &m_TexturePosition1);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 100, 100, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-    GLCall(glGenFramebuffers(1, &m_FBOPosition1));
-    GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition1));
-    GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition1, 0));*/
-
-
-    
-
-
-   
-
-   
-
-
-
-
-
-
-
 }
 
 test::TestFireParticles::~TestFireParticles()
@@ -127,7 +77,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
 {
     int width, height;
     glfwGetWindowSize(inCurrentWindow, &width, &height);
-    GLCall(glViewport(0, 0, 100, 100));
+    GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
 
     Renderer renderer;
 
@@ -147,7 +97,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles, 0, GL_RGBA, GL_FLOAT, NULL);
 
 
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition0, 0));
@@ -174,7 +124,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     // Clear the screen
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     //Change viewport back again
-    GLCall(glViewport(0, 0, 100, 100));
+    GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
 
     //Second texture and fbo for POSITIONING1----------------------------------------------------------------------------------------------------------
     GLCall(glGenFramebuffers(1, &m_FBOPosition1));
@@ -189,7 +139,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles, 0, GL_RGBA, GL_FLOAT, NULL);
 
 
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexturePosition1, 0));
@@ -201,7 +151,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     // Clear the screen
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     //Change viewport back again
-    GLCall(glViewport(0, 0, 100, 100));
+    GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
     m_shaderParticleVelInit = std::make_unique<Shader>("res/shaders/VSParticleVelocityInitial.vs", "res/shaders/FSParticleVelocityInitial.fs");
     m_shaderParticleVelInit->Bind();
 
@@ -217,7 +167,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles, 0, GL_RGBA, GL_FLOAT, NULL);
 
 
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureVelocity0, 0));
@@ -252,7 +202,7 @@ void test::TestFireParticles::Init(GLFWwindow* inCurrentWindow /*= nullptr*/)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 100, 100, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles, 0, GL_RGBA, GL_FLOAT, NULL);
 
     GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureVelocity1, 0));
 
@@ -274,23 +224,25 @@ void test::TestFireParticles::UpdatePosition(GLFWwindow* inCurrentWindow)
 
     //UPDATE POSITION USING VELOCITY AND OLD POSITIONS----------------------------------
     m_shaderParticlePosUpdate->Bind();
-    GLCall(glViewport(0, 0, 100, 100));
+    GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
     //Select FBO and texture to write to 
     if (readingFrom == 0) //Read from 0 and write to 1
     {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition1));
+        /*GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition1));*/
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition1));
 
 
     }
     else //Read from 1 and write to 0
     {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));
+        /*GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TexturePosition0));*/
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOPosition0));
 
     }
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
         // std::cout << "FBO success!" << std::endl;
     }
@@ -332,24 +284,25 @@ void test::TestFireParticles::UpdatePosition(GLFWwindow* inCurrentWindow)
 void test::TestFireParticles::UpdateVelocity(GLFWwindow* inCurrentWindow)
 {
     m_shaderParticleVelUpdate->Bind();
-    GLCall(glViewport(0, 0, 100, 100));
+    GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
     //Select FBO and texture to write to 
     if (readingFrom == 0) //Read from 0 and write to 1
     {
-        GLCall(glActiveTexture(GL_TEXTURE0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1));
+        /*GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1));*/
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity1));
 
 
     }
     else //Read from 1 and write to 0
     {
-        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0));
-        GLCall(glActiveTexture(GL_TEXTURE0));
+        /*GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0));
+        GLCall(glActiveTexture(GL_TEXTURE0));*/
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity0));
 
     }
-
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
         // std::cout << "FBO success!" << std::endl;
     }
@@ -598,7 +551,7 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
    
 
     //draw all instanced 
-    renderer.DrawInstances(*VAO, *m_IndexBuffer, *shader, 4, 10000);
+    renderer.DrawInstances(*VAO, *m_IndexBuffer, *shader, 4, m_nmbrPfParticles);
     
     /*shader->SetUniform1f("elapsedTime", m_ElapsedTime);
 
