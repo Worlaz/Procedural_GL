@@ -17,7 +17,7 @@ void main()
     
 
     vec4 position = texture(u_TexturePosition,v_TexCoord);
-    vec4 posClamped = clamp(position + position * 0.000001f,vec4(-100.0f),vec4(100.0f));
+    vec4 posClamped = clamp(position + position * 0.00000f,vec4(-100.0f),vec4(100.0f));
     color = posClamped;
     //vec4 velocity =  texture(u_TextureVelocity, v_TexCoord);
     //vec4 newPos = position + velocity* (u_DeltaTime/100);

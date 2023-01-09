@@ -17,10 +17,15 @@ void main()
     //color = vec4(sin(radius*v_TexCoord[0])/2 + 0.5);
 
     //a gray scale particle
-    //vec2 f =v_TexCoord * 2 - vec2(0.5);
-    //color = vec4(1 - distance(f,vec2(0.5,0.5)));
+    vec2 f = v_TexCoord * 2 - vec2(0.5);
+    vec4 outColor = vec4(1 - distance(f,vec2(0.5,0.5)));
+    if(outColor[3] < 0.5){discard;}
+    outColor[1] = 0;
+    outColor[2] = 0;
+    outColor[3] = 1;
+    color = outColor;
 
     //vec4 texColor = texture(u_TexturePos,v_TexCoord);
     //vec4 texColor = texture(u_TexturePos,v_TexCoord);
-    color = vec4(1.0);
+    //color = vec4(1.0);
 };

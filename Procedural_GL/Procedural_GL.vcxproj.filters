@@ -504,6 +504,8 @@
     <None Include="res\shaders\VSParticleVelocityInitial.vs" />
     <None Include="res\shaders\fragmentShaderParticleVelUpdate.fs" />
     <None Include="res\shaders\vertexShaderParticleVelUpdate.vs" />
+    <None Include="res\shaders\FSFireVelUpdate.fs" />
+    <None Include="res\shaders\VSFireVelUpdate.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">

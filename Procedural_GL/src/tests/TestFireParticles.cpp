@@ -5,6 +5,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/vector_angle.hpp"
 
 test::TestFireParticles::TestFireParticles()
     :m_ProjMatrix {
@@ -543,8 +544,20 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
 
     }
+    //glm::mat4 billboard = glm::lookAt(position, direction,up);
+    /*glm::mat4 billTranslate = glm::translate(glm::mat4(1.0f), position);
+    float angle = glm::angle(glm::normalize(direction),glm::vec3(0.0f,1.0f,0.0f));
+    angle = angle - 1.57;
+    glm::mat4 rotBill = glm::rotate(glm::mat4(1.0f),angle,glm::cross(direction,glm::vec3(0.0,1.0,0.0)));*/
 
-    mvp = mvp * glm::scale(glm::mat4(1.0f), glm::vec3(0.05, 0.05, 0.05));
+
+    /*glm::vec3 rotAxis = glm::normalize(glm::cross(position,glm::vec3(0.0f,1.0f,0.0f)));
+    float angle = glm::angle(glm::normalize(position), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    std::cout << angle << std::endl;
+    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), angle, rotAxis);
+    glm::mat4 bill = glm::lookAt(glm::vec3(0.0f), glm::vec3(0.0f) - direction, up);*/
+    mvp = m_ProjMatrix  * m_ViewMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.05, 0.05, 0.05));
 
     shader->SetUniformMat4f("u_MVP", mvp);
     shader->SetUniform1i("u_TexturePos", 0);
