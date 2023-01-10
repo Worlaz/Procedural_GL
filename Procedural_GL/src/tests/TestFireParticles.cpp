@@ -379,7 +379,7 @@ void test::TestFireParticles::UpdateFireVelocity(GLFWwindow* inCurrentWindow)
     if (readingFrom == 0)
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
@@ -388,7 +388,7 @@ void test::TestFireParticles::UpdateFireVelocity(GLFWwindow* inCurrentWindow)
     else
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
