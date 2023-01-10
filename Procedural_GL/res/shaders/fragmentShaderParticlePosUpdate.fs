@@ -18,14 +18,18 @@ void main()
    
     vec4 position = texture(u_TexturePosition,v_TexCoord);
     
-    vec4 posClamped = clamp(position + vec4(0.0f,0.1f,0.0f,0.0f) ,vec4(-100.0f),vec4(100.0f));
-    color = posClamped;
-    //vec4 velocity =  texture(u_TextureVelocity, v_TexCoord);
-    //vec4 newPos = position + velocity* (u_DeltaTime/100);
-    // vec4 positionClamped = clamp(newPos,vec4(-100.0f),vec4(100.0f));
+    
+    vec4 velocity =  texture(u_TextureVelocity, v_TexCoord);
+    vec4 newPos = position + velocity * u_DeltaTime;
+    newPos[3] = 1.0f;
     
     
-    //color = position;// + vec4(0.0f,0.0001f ,0.0f,1.0f) * u_DeltaTime/100;
+     vec4 positionClamped = clamp(newPos,vec4(-100.0f),vec4(100.0f));
+
+     color = positionClamped;
+    
+    
+    
     
    
 };

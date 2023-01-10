@@ -91,7 +91,7 @@ namespace test {
 		float speed = 3.0f; // 3 units / second
 		float mouseSpeed = 0.04f;
 		
-		glm::vec3 m_Acceleration;
+		glm::vec3 m_Acceleration{0.0f,0.0f,0.0f};
 
 	};
 

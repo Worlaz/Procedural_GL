@@ -19,8 +19,11 @@ void main()
 {
     
 
-    vec4 velocity = texture(u_TextureVelocity,v_TexCoord) + vec4(u_Acceleration[0],u_Acceleration[1],u_Acceleration[2],0.0f)*u_DeltaTime/100;
+    vec4 velocity = texture(u_TextureVelocity,v_TexCoord) + vec4(u_Acceleration[0],u_Acceleration[1],u_Acceleration[2],0.0f) * u_DeltaTime;
     vec4 velocityClamped = clamp(velocity,vec4(-1.0f),vec4(1.0f));
-    color = velocityClamped;
+    velocityClamped[3] = 1.0f;
+    color = velocity;
+    
+    //color = velocityClamped;
     
 };

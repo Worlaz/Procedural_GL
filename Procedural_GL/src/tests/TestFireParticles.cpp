@@ -279,7 +279,7 @@ void test::TestFireParticles::UpdatePosition(GLFWwindow* inCurrentWindow)
 
     m_shaderParticlePosUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
     m_shaderParticlePosUpdate->SetUniform1i("u_TexturePosition", 0);
-   // m_shaderParticlePosUpdate->SetUniform1i("u_TextureVelocity", 1);
+    m_shaderParticlePosUpdate->SetUniform1i("u_TextureVelocity", 1);
 
 
     //Update the position
