@@ -60,6 +60,9 @@ test::TestFireParticles::TestFireParticles()
     m_shaderParticleVelUpdate = std::make_unique<Shader>("res/shaders/vertexShaderParticleVelUpdate.vs", "res/shaders/fragmentShaderParticleVelUpdate.fs");
     m_shaderParticleVelUpdate->Bind();
 
+    m_shaderFireVelUpdate = std::make_unique<Shader>("res/shaders/VSFireVelUpdate.vs", "res/shaders/FSFireVelUpdate.fs");
+    m_shaderParticleVelUpdate->Bind();
+
     //shader = std::make_unique<Shader>("res/shaders/vertexShaderFireParticles.vs", "res/shaders/fragmentShaderFireParticles.fs");
     shader = std::make_unique<Shader>("res/shaders/vertexShaderParticle.vs", "res/shaders/fragmentShaderParticle.fs");
     //Shader shader("res/shaders/vertexShader.vs", "res/shaders/fragmentShader.fs");
@@ -341,6 +344,66 @@ void test::TestFireParticles::UpdateVelocity(GLFWwindow* inCurrentWindow)
     renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderParticleVelUpdate);
 }
 
+void test::TestFireParticles::UpdateFireVelocity(GLFWwindow* inCurrentWindow)
+{
+    m_shaderFireVelUpdate->Bind();
+    GLCall(glViewport(0, 0, m_SqrtNmbrOfParticles, m_SqrtNmbrOfParticles));
+    //Select FBO and texture to write to 
+    if (readingFrom == 0) //Read from 0 and write to 1
+    {
+        /*GLCall(glActiveTexture(GL_TEXTURE0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1));*/
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity1));
+
+
+    }
+    else //Read from 1 and write to 0
+    {
+        /*GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0));
+        GLCall(glActiveTexture(GL_TEXTURE0));*/
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FBOVelocity0));
+
+    }
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // std::cout << "FBO success!" << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO BAD" << std::endl;
+    }
+
+    //select texture to read from
+    if (readingFrom == 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
+
+    }
+    else
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
+
+
+    }
+
+    m_shaderFireVelUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
+    m_shaderFireVelUpdate->SetUniform1i("u_TexturePosition", 0);
+    m_shaderFireVelUpdate->SetUniform1i("u_TextureVelocity", 1);
+
+
+    //Update the Velocity
+    renderer.Draw(*VAO, *m_IndexBuffer, *m_shaderFireVelUpdate);
+}
+
 void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
 {
     m_shaderDisplayTexture->Bind();
@@ -518,7 +581,8 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
     //UPDATE Velocity USING OLD VELOCITY----------------------------------
    
-    UpdateVelocity();
+    //UpdateVelocity();
+    UpdateFireVelocity();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // Clear the screen

@@ -24,7 +24,7 @@ void main()
     newPos[3] = 1.0f;
     
     
-     vec4 positionClamped = clamp(newPos,vec4(-100.0f),vec4(100.0f));
+     vec4 positionClamped = clamp(newPos,vec4(-200.0f),vec4(200.0f));
 
      color = positionClamped;
     

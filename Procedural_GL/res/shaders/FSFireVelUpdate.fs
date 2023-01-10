@@ -5,8 +5,9 @@ layout(location = 0) out vec4 color;
 in vec2 v_TexCoord;
 
 uniform float u_DeltaTime;
-uniform vec3 u_Acceleration;
+uniform sampler2D u_TexturePosition;
 uniform sampler2D u_TextureVelocity;
+
        
 
 
@@ -300,10 +301,20 @@ float psrdnoise(vec3 x, vec3 period, float alpha, out vec3 gradient)
 
 void main()
 {
-    psrdnoise();
 
-    vec4 velocity = texture(u_TextureVelocity,v_TexCoord) + vec4(u_Acceleration[0],u_Acceleration[1],u_Acceleration[2],0.0f)*u_DeltaTime/100;
-    vec4 velocityClamped = clamp(velocity,vec4(-1.0f),vec4(1.0f));
+    vec4 position = texture(u_TexturePosition,v_TexCoord);
+    vec4 velocity = texture(u_TextureVelocity,v_TexCoord);
+    vec3 p = vec3(0.0f);
+
+    vec3 gradient = vec3(0.0f);
+    vec3 noisePosition = vec3(position[0],position[1],position[2]);
+    psrdnoise(noisePosition,p,u_DeltaTime,gradient);
+
+    vec4 result = velocity + vec4(gradient,1.0f)*u_DeltaTime;
+
+    
+    vec4 velocityClamped = clamp(result,vec4(-5.0f),vec4(5.0f));
+    velocityClamped[3] = 1.0f;
     color = velocityClamped;
     
 };

@@ -24,6 +24,7 @@ namespace test {
 		void Init(GLFWwindow* inCurrentWindow);
 		void UpdatePosition(GLFWwindow* inCurrentWindow = nullptr);
 		void UpdateVelocity(GLFWwindow* inCurrentWindow = nullptr);
+		void UpdateFireVelocity(GLFWwindow* inCurrentWindow = nullptr);
 		void DisplayTextures(GLFWwindow* inCurrentWindow = nullptr);
 		void OnUpdate(float deltaTime) override;
 		void OnRender(GLFWwindow* inCurrentWindow) override;
@@ -74,6 +75,7 @@ namespace test {
 		std::unique_ptr < Shader> m_shaderParticleVelInit;
 		std::unique_ptr < Shader> m_shaderParticlePosUpdate;
 		std::unique_ptr < Shader> m_shaderParticleVelUpdate;
+		std::unique_ptr < Shader> m_shaderFireVelUpdate;
 		std::unique_ptr < Shader> m_shaderDisplayTexture; //shader for displaying the position texture
 		std::unique_ptr<Texture> m_Texture;
 
