@@ -58,12 +58,19 @@ namespace test {
 		unsigned int m_TextureVelocity0;
 		unsigned int m_TextureVelocity1;
 		
-		unsigned int m_SqrtNmbrOfParticles{ 1000 };
+		unsigned int m_SqrtNmbrOfParticles{ 2000 };
 		unsigned int m_nmbrPfParticles{ m_SqrtNmbrOfParticles * m_SqrtNmbrOfParticles };
 
 		float m_DeltaTime{0.0f};
 		float m_ElapsedTime{ 0.0f };
-		float m_GradRotSpeed{ 1.0f };
+		float m_GradRotSpeed{ 0.0f };
+		float m_GradStrength{ 0.0f };
+		float m_frequency{ 0.003f };
+
+		bool m_ShowDebugTextures{ false };
+		
+
+
 		float m_VerticalSpeed{ 1.0f };
 		glm::mat4 m_ProjMatrix, m_ViewMatrix, m_ModelMatrix;
 
@@ -82,7 +89,7 @@ namespace test {
 
 		//User controls
 		// position
-		glm::vec3 position = glm::vec3(0, 0,5);
+		glm::vec3 position = glm::vec3(0.0f, 0.0f,30.0f);
 		// horizontal angle : toward -Z
 		float horizontalAngle = 3.14f;
 		// vertical angle : 0, look at the horizon

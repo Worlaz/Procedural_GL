@@ -130,7 +130,7 @@ void main(void){
     const float scale = 3.0f;
     vec2 v = scale * v_TexCoord;
     v[1] = v[1] - (elapsedTime * verticalSpeed);
-    const vec2 p = vec2(0.0);
+    const vec2 p = vec2(1.0);
     float alpha = 0.0;
     vec2 g;
     mat2 rot = rotate2D(0.52f);

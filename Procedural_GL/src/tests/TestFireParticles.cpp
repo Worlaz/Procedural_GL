@@ -4,6 +4,7 @@
 
 
 #include "glm/glm.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
@@ -396,6 +397,14 @@ void test::TestFireParticles::UpdateFireVelocity(GLFWwindow* inCurrentWindow)
     }
 
     m_shaderFireVelUpdate->SetUniform1f("u_DeltaTime", m_DeltaTime);
+    m_shaderFireVelUpdate->SetUniform1f("u_ElapsedTime", m_ElapsedTime);
+    m_shaderFireVelUpdate->SetUniform1f("u_GradRotSpeed", m_GradRotSpeed);
+
+    m_shaderFireVelUpdate->SetUniform1f("u_GradStrength", m_GradStrength);
+    m_shaderFireVelUpdate->SetUniform1f("u_Frequency", m_frequency);
+
+
+
     m_shaderFireVelUpdate->SetUniform1i("u_TexturePosition", 0);
     m_shaderFireVelUpdate->SetUniform1i("u_TextureVelocity", 1);
 
@@ -594,7 +603,11 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     //Display all textures pos and vel
-    DisplayTextures();
+    if (m_ShowDebugTextures)
+    {
+        DisplayTextures();
+
+    }
 
     //Render all particles-----------------------
     shader->Bind();
@@ -625,12 +638,50 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
     std::cout << angle << std::endl;
     glm::mat4 rot = glm::rotate(glm::mat4(1.0f), angle, rotAxis);
     glm::mat4 bill = glm::lookAt(glm::vec3(0.0f), glm::vec3(0.0f) - direction, up);*/
-    mvp = m_ProjMatrix  * m_ViewMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.05, 0.05, 0.05));
 
-    shader->SetUniformMat4f("u_MVP", mvp);
-    shader->SetUniform1i("u_TexturePos", 0);
+
+    float angle = glm::angle(glm::normalize(position), glm::vec3(0.0f, 0.0f, 1.0f));
+    //auto = glm::rotation(glm::vec3(0.0f,0.0,1.0f), glm::normalize(direction));
+
+    glm::vec3 rotAxis = glm::normalize(glm::cross(glm::normalize(position),  glm::vec3(0.0f, 0.0f, 1.0f)));
+    glm::mat4 rota = glm::rotate(glm::mat4(1.0f), angle, rotAxis);
+
+    
+
+    //mvp = m_ProjMatrix * m_ViewMatrix * rota * glm::scale(glm::mat4(1.0f), glm::vec3(0.05, 0.05, 0.05)) ;
+    
+    glm::mat4 model = glm::inverse(glm::lookAt(glm::vec3(0.0f), direction, glm::vec3(0.0f,1.0f,0.0f)));
+
+
+    glm::mat4 ModelView = m_ViewMatrix;
    
 
+        // Column 0:
+        ModelView[0][0] = 1;
+    ModelView[0][1] = 0;
+    ModelView[0][2] = 0;
+
+    // Column 1:
+    ModelView[1][0] = 0;
+    ModelView[1][1] = 1;
+    ModelView[1][2] = 0;
+
+    // Column 2:
+    ModelView[2][0] = 0;
+    ModelView[2][1] = 0;
+    ModelView[2][2] = 1;
+
+
+    mvp = m_ProjMatrix * m_ViewMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.05, 0.05, 0.05));
+
+
+    
+   
+    shader->SetUniformMat4f("u_MVP", mvp);
+    shader->SetUniform1f("u_sqrtnmbrOfParticles", m_SqrtNmbrOfParticles);
+    shader->SetUniform1i("u_TexturePos", 0);
+   
+   
     //draw all instanced 
     renderer.DrawInstances(*VAO, *m_IndexBuffer, *shader, 4, m_nmbrPfParticles);
     
@@ -652,7 +703,7 @@ void test::TestFireParticles::OnRender(GLFWwindow* inCurrentWindow)
         readingFrom = 0;
     }
 
-    //std::cout << m_DeltaTime << std::endl;
+    //std::cout << m_nmbrPfParticles << std::endl;
     
 }
 
@@ -660,6 +711,11 @@ void test::TestFireParticles::OnImGuiRender()
 {
     //ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
     //ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
-    ImGui::SliderFloat3("Translation A", &m_Acceleration.x, -1.0f, 1.0f);
+    //ImGui::SliderFloat3("Translation A", &m_Acceleration.x, -1.0f, 1.0f);
+    ImGui::SliderFloat("Gradient Strength",&m_GradStrength,0.0f,100.0f);
+    ImGui::SliderFloat("Gradient Rotation Speed",&m_GradRotSpeed,0.0f,10.0f);
+    ImGui::SliderFloat("Frequency",&m_frequency,0.00001f,1.0f);
+    ImGui::Checkbox("Show Debug Textures", &m_ShowDebugTextures);
+   
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
