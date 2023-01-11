@@ -420,7 +420,7 @@ void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_TexturePosition0);
 
-    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-6.0, 0.0, 0.0)); //reversed order for opengl layout
+    glm::mat4 mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-6.0, 30.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
@@ -434,7 +434,7 @@ void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_TexturePosition1);
 
-    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 0.0, 0.0)); //reversed order for opengl layout
+    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-3.0, 30.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
@@ -449,7 +449,7 @@ void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_TextureVelocity0);
 
-    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(3.0, 0.0, 0.0)); //reversed order for opengl layout
+    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(3.0, 30.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);
@@ -461,7 +461,7 @@ void test::TestFireParticles::DisplayTextures(GLFWwindow* inCurrentWindow)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_TextureVelocity1);
 
-    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(6.0, 0.0, 0.0)); //reversed order for opengl layout
+    mvp_display = m_ProjMatrix * m_ViewMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(6.0, 30.0, 0.0)); //reversed order for opengl layout
 
     m_shaderDisplayTexture->SetUniformMat4f("u_MVP", mvp_display);
     m_shaderDisplayTexture->SetUniform1i("u_Texture", 0);

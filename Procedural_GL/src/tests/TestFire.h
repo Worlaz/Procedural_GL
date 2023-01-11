@@ -55,7 +55,7 @@ namespace test {
 
 		//User controls
 		// position
-		glm::vec3 position = glm::vec3(1, 0, 2.5);
+		glm::vec3 position = glm::vec3(0, 0, 2.5);
 		// horizontal angle : toward -Z
 		float horizontalAngle = 3.14f;
 		// vertical angle : 0, look at the horizon
