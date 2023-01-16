@@ -315,7 +315,8 @@ void main()
     vec3 noisePosition = vec3(position[0],position[1],position[2]);
     float noiseValue = psrdnoise(noisePosition * u_Frequency,p,u_ElapsedTime * u_GradRotSpeed,gradient);
 
-    vec4 result = velocity + vec4(gradient,1.0f)*u_DeltaTime * u_GradStrength;
+    //vec4 result = velocity + vec4(gradient,1.0f)*u_DeltaTime * u_GradStrength;
+    vec4 result = velocity + vec4(gradient[0],gradient[1],gradient[2],1.0f)*u_DeltaTime * u_GradStrength;
 
     
     //vec4 velocityClamped = clamp(result,vec4(-5.0f),vec4(5.0f));

@@ -58,7 +58,7 @@ namespace test {
 		unsigned int m_TextureVelocity0;
 		unsigned int m_TextureVelocity1;
 		
-		unsigned int m_SqrtNmbrOfParticles{ 2000 };
+		unsigned int m_SqrtNmbrOfParticles{ 4000 };
 		unsigned int m_nmbrPfParticles{ m_SqrtNmbrOfParticles * m_SqrtNmbrOfParticles };
 
 		float m_DeltaTime{0.0f};
