@@ -1,18 +1,8 @@
-﻿  Application.cpp
-C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\Application.cpp(182,33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\Application.cpp(115,14): warning C4101: 'renderer': unreferenced local variable
-  TestFire.cpp
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(3437,56): warning C4244: 'argument': conversion from '_Ty' to 'unsigned int', possible loss of data
-          with
-          [
-              _Ty=unsigned __int64
-          ]
-C:\Users\William\Documents\OpenGL_Project\Procedural_GL\Procedural_GL\src\tests\TestFire.cpp(39): message : see reference to function template instantiation 'std::unique_ptr<VertexBuffer,std::default_delete<VertexBuffer>> std::make_unique<VertexBuffer,const float(&)[20],unsigned __int64,0>(const float (&)[20],unsigned __int64 &&)' being compiled
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+﻿LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  6 of 2536 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    43 functions had inline decision re-evaluated but remain unchanged
+  0 of 2536 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
 glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\William\Documents\OpenGL_Project\Procedural_GL\x64\Release\vc120.pdb'; linking object as if no debug info
   Procedural_GL.vcxproj -> C:\Users\William\Documents\OpenGL_Project\Procedural_GL\x64\Release\Procedural_GL.exe
